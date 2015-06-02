@@ -30,9 +30,18 @@ from pid import pidpy as PIDController
 import xml.etree.ElementTree as ET
 from flask import Flask, render_template, request, jsonify
 
+import Adafruit_GPIO.SPI as SPI
+import Adafruit_MAX31855.MAX31855 as MAX31855
+
 global parent_conn, parent_connB, parent_connC, statusQ, statusQ_B, statusQ_C
 global xml_root, template_name, pinHeatList, pinGPIOList
 global brewtime
+
+#MAX31855 temp probe constants
+CLK = 25
+CS  = 24
+DO  = 18
+sensor = MAX31855.MAX31855(CLK, CS, DO)
 
 app = Flask(__name__, template_folder='templates')
 # url_for('static', filename='raspibrew.css')
@@ -55,7 +64,13 @@ class param:
         "i_param": 165,
         "d_param": 4
     }
+<<<<<<< HEAD
 
+=======
+                      
+def c_to_f(c):
+    return c * 9.0 / 5.0 + 32.0
+>>>>>>> 5c0dd0d8f18021a78e1f8fc57a74463c87f1be71
 
 # main web page    
 @app.route('/', methods=['GET', 'POST'])
@@ -180,7 +195,12 @@ def getbrewtime():
 
 # Retrieve temperature from DS18B20 temperature sensor
 def tempData1Wire(tempSensorId):
+<<<<<<< HEAD
     pipe = Popen(["cat", "/sys/bus/w1/devices/w1_bus_master1/" + tempSensorId + "/w1_slave"], stdout=PIPE)
+=======
+    '''
+    pipe = Popen(["cat","/sys/bus/w1/devices/w1_bus_master1/" + tempSensorId + "/w1_slave"], stdout=PIPE)
+>>>>>>> 5c0dd0d8f18021a78e1f8fc57a74463c87f1be71
     result = pipe.communicate()[0]
     if (result.split('\n')[0].split(' ')[11] == "YES"):
         temp_C = float(result.split("=")[-1]) / 1000  # temp in Celcius
@@ -188,6 +208,9 @@ def tempData1Wire(tempSensorId):
         temp_C = -99  # bad temp reading
 
     return temp_C
+    '''
+    temp = sensor.readTempC() # defaults to C units
+    return temp;
 
 
 # Stand Alone Get Temperature Process
